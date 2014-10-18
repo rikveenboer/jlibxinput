@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Created by Herkules.
+-->
+
+<project basedir="." default="all" name="jxinput">
+
+    <target name="init">
+		<property name="srcdir" value="../java"/>
+		<property name="dstdir" value="../build"/>
+		<property name="tmpdir" value="../tmp"/>
+		<property name="classesdir" value="../classes"/>
+		<property name="docdir" value="${dstdir}/javadoc"/>
+		<property name="jarfile" value="${dstdir}/jxinput.jar"/>
+    </target>
+
+    <target depends="init" name="compile">
+		<mkdir dir="${classesdir}"/>
+        <javac debug="true" deprecation="true" destdir="${classesdir}" srcdir="${srcdir}">
+            <classpath>
+				<pathelement location="../../third-party/java3d/win32/lib/ext/j3dcore.jar"/>
+				<pathelement location="../../third-party/java3d/win32/lib/ext/j3dutils.jar"/>
+				<pathelement location="../../third-party/java3d/win32/lib/ext/vecmath.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target depends="init,compile" name="jar">
+		<mkdir dir="${dstdir}"/>	
+        <jar basedir="${classesdir}" compress="true" jarfile="${jarfile}"/>
+    </target>
+
+
+<!--    <target depends="init,all" description="Try running it." name="test">
+        <java classname="com.foo.Main" failonerror="true" fork="true">
+            <classpath>
+                <pathelement location="."/>
+            </classpath>
+            <arg value="-myfile"/>
+            <arg file="myfile.txt"/>
+        </java>
+    </target>
+-->
+
+    <target depends="init" description="Javadoc for my API." name="javadoc">
+        <mkdir dir="${docdir}"/>
+        <javadoc destdir="${docdir}" sourcepath="${srcdir}" packagenames="*">
+        </javadoc>    
+	</target>
+
+	
+	<!-- 
+		Clean expects that the jxinput.dll is compiled into the dstdir 
+		and may NOT be deleted!
+	-->
+    <target depends="init" description="Clean all build products." name="clean">
+		<delete>
+			<fileset dir="${dstdir}" includes="**/*" excludes="**/*.dll"/>
+		</delete>
+		<delete dir="${tmpdir}"/>
+    </target>
+
+    <target depends="init,jar" description="Build everything." name="all">
+        <echo message="Application built."/>
+    </target>
+	
+</project>
