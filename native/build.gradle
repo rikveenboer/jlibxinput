@@ -1,0 +1,90 @@
+apply plugin: 'cpp'
+apply plugin: 'java'
+apply plugin: 'maven'
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.12'
+}
+
+group = 'com.github.boukefalos'
+project.archivesBaseName = 'jlibxinput'
+version = '1.0'
+
+model {
+    platforms {
+		windows_i386 {
+			architecture 'i386'
+			operatingSystem 'windows'
+		}
+        windows_amd64 {
+            architecture 'amd64'
+            operatingSystem 'windows'
+        }
+    }
+    toolChains {
+        visualCpp(VisualCpp)
+    }
+	repositories {
+		libs(PrebuiltLibraries) {
+			dxguid {
+				binaries.withType(StaticLibraryBinary) {
+					staticLibraryFile = file("lib/${targetPlatform.name}/dxguid.lib")
+				}
+			}
+			dinput8 {
+				binaries.withType(StaticLibraryBinary) {
+					staticLibraryFile = file("lib/${targetPlatform.name}/dinput8.lib")
+				}
+			}
+			user32 {
+				binaries.withType(StaticLibraryBinary) {
+					staticLibraryFile = file("lib/${targetPlatform.name}/user32.lib")
+				}
+			}
+		}
+	}
+}
+
+
+libraries {
+    main {
+        baseName project.archivesBaseName
+    }
+	all {
+        binaries.withType(SharedLibraryBinary) { binary ->
+			cppCompiler.define 'JXINPUT_EXPORTS'
+			cppCompiler.args '-Wall'
+			if (targetPlatform.operatingSystem.macOsX) {
+                cppCompiler.args '-I', "/System/Library/Frameworks/JavaVM.framework/Headers"
+                linker.args '-framework', "JavaVM"
+            } else if (targetPlatform.operatingSystem.linux) {
+                cppCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+                cppCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
+            } else if (targetPlatform.operatingSystem.windows) {
+                cppCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+                cppCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/win32"
+            }
+			lib library: 'dxguid', linkage: 'static'
+			lib library: 'dinput8', linkage: 'static'
+			lib library: 'user32', linkage: 'static'
+        }
+    }
+}
+binaries.withType(SharedLibraryBinary) { binary ->
+    if (buildable) {
+        def builderTask = binary.tasks.builder
+        jar.into("native/${targetPlatform.operatingSystem.name}/${targetPlatform.architecture.name}") {
+                from builderTask.outputFile
+        }
+        jar.dependsOn builderTask
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives sourcesJar
+}
