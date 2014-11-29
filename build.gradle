@@ -79,8 +79,7 @@ libraries {
     }
 	all {
         binaries.withType(SharedLibraryBinary) { binary ->
-			cppCompiler.define 'JXINPUT_EXPORTS'
-			//cppCompiler.args '-Wall'			
+			cppCompiler.define 'JXINPUT_EXPORTS'	
 			cppCompiler.args '-I' + jniHeadersDir
 			if (targetPlatform.operatingSystem.macOsX) {
                 cppCompiler.args '-I', "/System/Library/Frameworks/JavaVM.framework/Headers"
@@ -101,21 +100,69 @@ libraries {
         }
     }
 }
+
+tasks.withType(Upload) {
+	repositories {
+		mavenDeployer {
+			repository(url: uri('.maven'))
+		}
+	}
+}
+
+configurations {
+	jni
+}
+
+def deployer = uploadJni.repositories.mavenDeployer
+
 binaries.withType(SharedLibraryBinary) { binary ->
-    if (buildable) {
-        def builderTask = binary.tasks.builder
-        jar.into("native/${targetPlatform.operatingSystem.name}/${targetPlatform.architecture.name}") {
-                from builderTask.outputFile
-        }
-        jar.dependsOn builderTask
-    }
+	if (!buildable) {
+		return
+	}
+	def variantName = "${targetPlatform.operatingSystem.name}-${targetPlatform.architecture.name}"
+	def taskName = "jar-${variantName}"
+	def nativeJar = project.tasks.findByName(taskName)
+	if (nativeJar == null) {
+		nativeJar = project.task(taskName, type: Jar) {
+			baseName = "${project.archivesBaseName}-$variantName"
+		}
+		artifacts {
+			jni nativeJar
+		}
+		def jniPom = deployer.addFilter(variantName) { artifact, file ->
+			return file == nativeJar.archivePath
+		}
+		jniPom.groupId = project.group
+		jniPom.artifactId = nativeJar.baseName
+		jniPom.version = project.version
+		jniPom.scopeMappings.mappings.clear()
+	}
+	def builderTask = binary.tasks.builder
+	def libraryDirectory = project.group.replace('.', '/') + "/${project.archivesBaseName}/${variantName}"
+	nativeJar.into(libraryDirectory) { from builderTask.outputFile }
+	nativeJar.dependsOn builderTask
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.java.srcDirs
+def mainPom = uploadArchives.repositories.mavenDeployer.pom
+mainPom.groupId = project.group
+mainPom.artifactId = jar.baseName
+mainPom.version = project.version
+mainPom.scopeMappings.mappings.clear()
+mainPom.withXml { provider ->
+	def node = provider.asNode()
+	def deps = node.appendNode('dependencies')
+	['windows-amd64', 'windows-i386'].each { platform ->
+		def dep = deps.appendNode('dependency')
+		dep.appendNode('groupId', project.group)
+		dep.appendNode('artifactId', "${project.archivesBaseName}-${platform}")
+		dep.appendNode('version', project.version)
+	}
+	def dep = deps.appendNode('dependency')
+	dep.appendNode('groupId', 'com.github.boukefalos')
+	dep.appendNode('artifactId', 'jlibloader')
+	dep.appendNode('version', '0.2')
 }
 
-artifacts {
-    archives sourcesJar
+jar {
+	from sourceSets.main.allSource
 }

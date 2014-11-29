@@ -10,6 +10,8 @@ package de.hardcode.jxinput.directinput;
 
 import java.lang.reflect.Array;
 
+import com.github.boukefalos.jlibloader.Native;
+
 /**
  * DirectInputDriver: the connection to the Win32 joystick.
  * There is only one allowed, so the layout of this class is merely static.
@@ -44,9 +46,7 @@ class DirectInputDriver
 	{
 		try
 		{
-			// Load the native lib.
-			System.loadLibrary( NATIVE_LIB_NAME );
-			
+			Native.load("com.github.boukefalos", "jlibxinput");
             init();
 		}
 		catch( SecurityException e )
