@@ -1,10 +1,10 @@
 //**********************************************************************************************
-//		(C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
-//		All rights reserved. Copying, modification,
-//		distribution or publication without the prior written
-//		consent of the author is prohibited.
+//        (C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
+//        All rights reserved. Copying, modification,
+//        distribution or publication without the prior written
+//        consent of the author is prohibited.
 //
-//	Created on 19. Dezember 2001, 21:47
+//    Created on 19. Dezember 2001, 21:47
 //**********************************************************************************************
 package de.hardcode.jxinput;
 
@@ -30,42 +30,42 @@ package de.hardcode.jxinput;
  */
 public interface JXInputDevice
 {
-	/**
-	 * @directed 
-	 */
+    /**
+     * @directed 
+     */
     /*#Features lnkFeatures;*/
 
-	/**
-	 *@link aggregationByValue
-	 */
+    /**
+     *@link aggregationByValue
+     */
     /*#Feature lnkFeature;*/
 
-	/** 
-	 * Devices may have a name. 
-	 * This name might be provided by a system dependant driver. 
-	 */
-	String getName();
-		
-	/** Actual number of available axes. */
-	int getNumberOfAxes();
+    /** 
+     * Devices may have a name. 
+     * This name might be provided by a system dependant driver. 
+     */
+    String getName();
+        
+    /** Actual number of available axes. */
+    int getNumberOfAxes();
 
-	/** Actual number of available buttons. */
-	int getNumberOfButtons();
+    /** Actual number of available buttons. */
+    int getNumberOfButtons();
 
-	/** Actual number of available directional features. */
-	int getNumberOfDirectionals();
-	
-	/** Maximum number of axes as an upper bound for index values. */
-	int getMaxNumberOfAxes();
+    /** Actual number of available directional features. */
+    int getNumberOfDirectionals();
+    
+    /** Maximum number of axes as an upper bound for index values. */
+    int getMaxNumberOfAxes();
 
-	/** Maximum number of buttons as an upper bound for index values. */
-	int getMaxNumberOfButtons();
+    /** Maximum number of buttons as an upper bound for index values. */
+    int getMaxNumberOfButtons();
 
-	/** Maximum number of directional features as an upper bound for index values. */
-	int getMaxNumberOfDirectionals();
-	
-	Axis getAxis( int idx );
-	Button getButton( int idx );	
-	Directional getDirectional( int idx );	
+    /** Maximum number of directional features as an upper bound for index values. */
+    int getMaxNumberOfDirectionals();
+    
+    Axis getAxis( int idx );
+    Button getButton( int idx );    
+    Directional getDirectional( int idx );    
 }
 

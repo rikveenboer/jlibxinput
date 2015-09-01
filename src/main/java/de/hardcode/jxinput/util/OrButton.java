@@ -1,8 +1,8 @@
 //**********************************************************************************************
-//		(C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
-//		All rights reserved. Copying, modification,
-//		distribution or publication without the prior written
-//		consent of the author is prohibited.
+//        (C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
+//        All rights reserved. Copying, modification,
+//        distribution or publication without the prior written
+//        consent of the author is prohibited.
 //
 // Created on 23. Dezember 2002, 19:21
 //**********************************************************************************************

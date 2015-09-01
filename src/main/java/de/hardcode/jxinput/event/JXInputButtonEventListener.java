@@ -1,10 +1,10 @@
 //**********************************************************************************************
-//		(C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
-//		All rights reserved. Copying, modification,
-//		distribution or publication without the prior written
-//		consent of the author is prohibited.
+//        (C) Copyright 2002 by Dipl. Phys. Joerg Plewe, HARDCODE Development
+//        All rights reserved. Copying, modification,
+//        distribution or publication without the prior written
+//        consent of the author is prohibited.
 //
-//	Created on 31. Januar 2002, 23:54
+//    Created on 31. Januar 2002, 23:54
 //**********************************************************************************************
 package de.hardcode.jxinput.event;
 
@@ -14,6 +14,6 @@ package de.hardcode.jxinput.event;
  */
 public interface JXInputButtonEventListener
 {
-	void changed( JXInputButtonEvent ev );
+    void changed( JXInputButtonEvent ev );
 }
 

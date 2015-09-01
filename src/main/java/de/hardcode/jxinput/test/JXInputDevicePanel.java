@@ -28,34 +28,34 @@ public class JXInputDevicePanel extends javax.swing.JPanel
 {
     private static final Font AXIS_SLIDER_FONT = new Font( "Verdana", Font.PLAIN, 9 );
     
-   	private final   JXInputDevice mDev;
-    private final 	ArrayList mAxisSliders          = new ArrayList();
-	private final   ArrayList mButtonCheckboxes     = new ArrayList();
-	private final   ArrayList mDirectionalLabels    = new ArrayList();
+       private final   JXInputDevice mDev;
+    private final     ArrayList mAxisSliders          = new ArrayList();
+    private final   ArrayList mButtonCheckboxes     = new ArrayList();
+    private final   ArrayList mDirectionalLabels    = new ArrayList();
 
     
     /** Creates new form JXInputDevicePanel */
     public JXInputDevicePanel( JXInputDevice dev ) 
     {
-		mDev = dev;
+        mDev = dev;
         initComponents();
         initFromDevice();
     }
 
-	/**
-	 * Helper class connecting a JSlider with an Axis.
-	 */
-	private class AxisSlider extends JSlider
-	{
-		Axis mAxis;
-		AxisSlider( Axis axis )
-		{
-			super( ( Axis.SLIDER == axis.getType() ? 0 : -100 ), 100 );
+    /**
+     * Helper class connecting a JSlider with an Axis.
+     */
+    private class AxisSlider extends JSlider
+    {
+        Axis mAxis;
+        AxisSlider( Axis axis )
+        {
+            super( ( Axis.SLIDER == axis.getType() ? 0 : -100 ), 100 );
             this.setMajorTickSpacing( Axis.SLIDER == axis.getType() ? 25 : 50 );
             this.setMinorTickSpacing( 5 );
             this.setPaintTicks( true );
             this.setPaintLabels( true );
-			this.setEnabled( false );
+            this.setEnabled( false );
             
             Dictionary labeldict = this.getLabelTable();
             Enumeration labels = labeldict.elements();
@@ -67,166 +67,166 @@ public class JXInputDevicePanel extends javax.swing.JPanel
                 label.setHorizontalAlignment( SwingConstants.LEFT );
             }
             
-			mAxis = axis;
-		}
-		
-		void update()
-		{
-			int ax = (int)(mAxis.getValue() * 100.0);
+            mAxis = axis;
+        }
+        
+        void update()
+        {
+            int ax = (int)(mAxis.getValue() * 100.0);
 
-			//
-			// Only if value really changes
-			//
-			if ( ax != this.getValue() )
-			{
-				this.setValue( ax );
-				this.setToolTipText( mAxis.getName() + ": " + Double.toString( mAxis.getValue() ) );
-			}
-		}
-		
-	}
-
-	
-	private class ButtonCheckbox extends JCheckBox
-	{
-		Button mButton;
-		ButtonCheckbox( Button button )
-		{
-			super( button.getName() );
-			this.setEnabled( false );
-			mButton = button;
-		}
-		
-		void update()
-		{
-			boolean state = mButton.getState();
-
-			//
-			// Only if value really changes
-			//
-			if ( state != this.isSelected() )
-			{
-				this.setSelected( state );
-			}
-		}		
-	}
-
-	
-	private class DirectionalLabel extends JLabel
-	{
-		Directional mDirectional;
-		int mCurrent = 0;
-
-		DirectionalLabel( Directional directional )
-		{
-			super( directional.getName() );
-			mDirectional = directional;
-		}
-		
-		void update()
-		{
-			int dir = mDirectional.getDirection();
-
-			//
-			// Only if value really changes
-			//
-			if ( dir != mCurrent )
-			{
-				this.setText( mDirectional.getName() + ":  " + ( mDirectional.isCentered() ? "-" : Integer.toString( dir ) ) );
-				mCurrent = dir;
-			}
-		}		
-	}
+            //
+            // Only if value really changes
+            //
+            if ( ax != this.getValue() )
+            {
+                this.setValue( ax );
+                this.setToolTipText( mAxis.getName() + ": " + Double.toString( mAxis.getValue() ) );
+            }
+        }
+        
+    }
 
     
-	/**
-	 * Setup the dialogs content from the JXInputDevice.
-	 */
-	void initFromDevice()
-	{		
-		if ( null != mDev )
-		{						
-			((GridLayout)mAxesPanel.getLayout()).setRows( mDev.getNumberOfAxes() );
-			
-			for ( int i = 0; i < mDev.getMaxNumberOfAxes(); ++i )
-			{
-				if ( null != mDev.getAxis( i ) )
-				{
-					AxisSlider slider = new AxisSlider( mDev.getAxis( i ) );
+    private class ButtonCheckbox extends JCheckBox
+    {
+        Button mButton;
+        ButtonCheckbox( Button button )
+        {
+            super( button.getName() );
+            this.setEnabled( false );
+            mButton = button;
+        }
+        
+        void update()
+        {
+            boolean state = mButton.getState();
+
+            //
+            // Only if value really changes
+            //
+            if ( state != this.isSelected() )
+            {
+                this.setSelected( state );
+            }
+        }        
+    }
+
+    
+    private class DirectionalLabel extends JLabel
+    {
+        Directional mDirectional;
+        int mCurrent = 0;
+
+        DirectionalLabel( Directional directional )
+        {
+            super( directional.getName() );
+            mDirectional = directional;
+        }
+        
+        void update()
+        {
+            int dir = mDirectional.getDirection();
+
+            //
+            // Only if value really changes
+            //
+            if ( dir != mCurrent )
+            {
+                this.setText( mDirectional.getName() + ":  " + ( mDirectional.isCentered() ? "-" : Integer.toString( dir ) ) );
+                mCurrent = dir;
+            }
+        }        
+    }
+
+    
+    /**
+     * Setup the dialogs content from the JXInputDevice.
+     */
+    void initFromDevice()
+    {        
+        if ( null != mDev )
+        {                        
+            ((GridLayout)mAxesPanel.getLayout()).setRows( mDev.getNumberOfAxes() );
+            
+            for ( int i = 0; i < mDev.getMaxNumberOfAxes(); ++i )
+            {
+                if ( null != mDev.getAxis( i ) )
+                {
+                    AxisSlider slider = new AxisSlider( mDev.getAxis( i ) );
                                      
-					JLabel name = new JLabel( mDev.getAxis( i ).getName() );
+                    JLabel name = new JLabel( mDev.getAxis( i ).getName() );
                     name.setVerticalAlignment( SwingConstants.TOP );
                     name.setHorizontalAlignment( SwingConstants.CENTER );
-					name.setPreferredSize( new java.awt.Dimension( 90, 0 ) );	
+                    name.setPreferredSize( new java.awt.Dimension( 90, 0 ) );    
                                      
                     JPanel p = new JPanel();
                     p.setLayout( new BorderLayout() );
                     
                     p.add( name, BorderLayout.WEST );
-					p.add( slider, BorderLayout.CENTER );
+                    p.add( slider, BorderLayout.CENTER );
 
                     mAxesPanel.add( p );
 
                     // Add to list of all AxisSlider controls
                     mAxisSliders.add( slider );
-					
-					// Add an event listener:
-					new AxisListener( mDev.getAxis( i ) );
-				}
-			}
+                    
+                    // Add an event listener:
+                    new AxisListener( mDev.getAxis( i ) );
+                }
+            }
 
-			
-			((GridLayout)mButtonsPanel.getLayout()).setRows( mDev.getNumberOfButtons() );
-			for ( int i = 0; i < mDev.getMaxNumberOfButtons(); ++i )
-			{
-				if ( null != mDev.getButton( i ) )
-				{
-					ButtonCheckbox chk = new ButtonCheckbox( mDev.getButton( i ) );
-					mButtonCheckboxes.add( chk );
-					mButtonsPanel.add( chk );
+            
+            ((GridLayout)mButtonsPanel.getLayout()).setRows( mDev.getNumberOfButtons() );
+            for ( int i = 0; i < mDev.getMaxNumberOfButtons(); ++i )
+            {
+                if ( null != mDev.getButton( i ) )
+                {
+                    ButtonCheckbox chk = new ButtonCheckbox( mDev.getButton( i ) );
+                    mButtonCheckboxes.add( chk );
+                    mButtonsPanel.add( chk );
 
-					// Add an event listener:
-					new ButtonListener( mDev.getButton( i ) );
-				}
-			}
-			
-			((GridLayout)mDirectionalPanel.getLayout()).setRows( mDev.getNumberOfDirectionals() / 2 );
-			for ( int i = 0; i < mDev.getMaxNumberOfDirectionals(); ++i )
-			{
-				if ( null != mDev.getDirectional( i ) )
-				{
-					DirectionalLabel lbl = new DirectionalLabel( mDev.getDirectional( i ) );
-					mDirectionalLabels.add( lbl );
-					mDirectionalPanel.add( lbl );
+                    // Add an event listener:
+                    new ButtonListener( mDev.getButton( i ) );
+                }
+            }
+            
+            ((GridLayout)mDirectionalPanel.getLayout()).setRows( mDev.getNumberOfDirectionals() / 2 );
+            for ( int i = 0; i < mDev.getMaxNumberOfDirectionals(); ++i )
+            {
+                if ( null != mDev.getDirectional( i ) )
+                {
+                    DirectionalLabel lbl = new DirectionalLabel( mDev.getDirectional( i ) );
+                    mDirectionalLabels.add( lbl );
+                    mDirectionalPanel.add( lbl );
 
-					// Add an event listener:
-					new DirectionalListener( mDev.getDirectional( i ) );
-				}
-			}
-		}
-	}
+                    // Add an event listener:
+                    new DirectionalListener( mDev.getDirectional( i ) );
+                }
+            }
+        }
+    }
     
     
-	public void update()
-	{
+    public void update()
+    {
         Iterator it = mAxisSliders.iterator();
-		while ( it.hasNext() )
-		{
-			((AxisSlider)it.next()).update();
-		}
+        while ( it.hasNext() )
+        {
+            ((AxisSlider)it.next()).update();
+        }
 
-		it = mButtonCheckboxes.iterator();
-		while ( it.hasNext() )
-		{
-			((ButtonCheckbox)it.next()).update();
-		}
+        it = mButtonCheckboxes.iterator();
+        while ( it.hasNext() )
+        {
+            ((ButtonCheckbox)it.next()).update();
+        }
 
-		it = mDirectionalLabels.iterator();
-		while ( it.hasNext() )
-		{
-			((DirectionalLabel)it.next()).update();
-		}
-	}
+        it = mDirectionalLabels.iterator();
+        while ( it.hasNext() )
+        {
+            ((DirectionalLabel)it.next()).update();
+        }
+    }
     
     
     /** This method is called from within the constructor to
@@ -276,12 +276,12 @@ public class JXInputDevicePanel extends javax.swing.JPanel
 
     }// </editor-fold>//GEN-END:initComponents
 
-	private void OnShow(java.awt.event.ComponentEvent evt)//GEN-FIRST:event_OnShow
-	{//GEN-HEADEREND:event_OnShow
-		// Commented: the focus is held by a parent component
-//		System.out.println("OnShow");
-//		this.requestFocus();
-	}//GEN-LAST:event_OnShow
+    private void OnShow(java.awt.event.ComponentEvent evt)//GEN-FIRST:event_OnShow
+    {//GEN-HEADEREND:event_OnShow
+        // Commented: the focus is held by a parent component
+//        System.out.println("OnShow");
+//        this.requestFocus();
+    }//GEN-LAST:event_OnShow
  
     
 
